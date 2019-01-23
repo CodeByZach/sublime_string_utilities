@@ -15,36 +15,32 @@
 						"caption": "StringUtilities",
 						"children":
 						[
-							{ "caption": "Convert Tabs to Spaces", "command": "convert_tabs_to_spaces" },
-							{ "caption": "Convert Spaces to Tabs", "command": "convert_spaces_to_tabs" },
+							{ "caption": "Quotes Single -> Double", "command": "convert_single_quotes_to_double" },
+							{ "caption": "Quotes Single <- Double", "command": "convert_double_quotes_to_single" },
 							{ "caption": "-" },
-							{ "caption": "Convert Spaces to &nbsp; (Non-breaking space)", "command": "convert_spaces_to_non_breaking" },
-							{ "caption": "Convert Chars to HTML Entities", "command": "convert_chars_to_html" },
-							{ "caption": "Convert HTML Entities to Chars", "command": "convert_html_to_chars" },
+							{ "caption": "Tabs -> Spaces", "command": "convert_tabs_to_spaces" },
+							{ "caption": "Tabs <- Spaces", "command": "convert_spaces_to_tabs" },
 							{ "caption": "-" },
-							{ "caption": "Convert camelCase <-> Underscores", "command": "convert_camel_underscores" },
-							{ "caption": "Convert camelCase <-> Dash", "command": "convert_camel_dash" },
-							{ "caption": "Convert PascalCase <-> Underscores", "command": "convert_pascal_underscores" },
+							{ "caption": "Spaces -> &nbsp;", "command": "convert_spaces_to_non_breaking" },
+							{ "caption": "Chars -> HTML Entities", "command": "convert_chars_to_html" },
+							{ "caption": "Chars <- HTML Entities", "command": "convert_html_to_chars" },
 							{ "caption": "-" },
-							{ "caption": "Expand Selection To Whole String", "command": "string_utilities_expand_string" },
-							{ "caption": "Convert Single Quotes To Double", "command": "convert_single_quotes_to_double" },
-							{ "caption": "Convert Double Quotes To Single", "command": "convert_double_quotes_to_single" },
-							{ "caption": "Encode as URL Notation", "command": "url_encode" },
-							{ "caption": "Decode from URL Notation", "command": "url_decode" },
-							{ "caption": "Convert To Unicode Notation", "command": "convert_to_unicode_notation" },
-							{ "caption": "Convert From Unicode Notation", "command": "convert_from_unicode_notation" },
-							{ "caption": "Convert To Base64", "command": "convert_to_base64" },
-							{ "caption": "Convert From Base64", "command": "convert_from_base64" },
-							{ "caption": "Convert To Hex", "command": "convert_to_hex" },
-							{ "caption": "Convert From Hex", "command": "convert_from_hex" },
-							{ "caption": "Convert HTML Color Hex To RGB", "command": "convert_hex_to_rgb" },
-							{ "caption": "Convert HTML Color RGB To Hex", "command": "convert_rgb_to_hex" },
-							{ "caption": "Calculate MD5", "command": "convert_md5" },
-							{ "caption": "Calculate SHA1", "command": "convert_sha1" },
+							{ "caption": "camelCase <-> Underscores", "command": "convert_camel_underscores" },
+							{ "caption": "camelCase <-> Dash", "command": "convert_camel_dash" },
+							{ "caption": "PascalCase <-> Underscores", "command": "convert_pascal_underscores" },
 							{ "caption": "-" },
-							{ "caption": "Convert Unixtime <-> Datetime", "command": "convert_time_format" },
+							{ "caption": "Hex -> RGB", "command": "convert_hex_to_rgb" },
+							{ "caption": "Hex <- RGB", "command": "convert_rgb_to_hex" },
+							{ "caption": "-" },
 							{ "caption": "Insert Current Datetime", "command": "insert_timestamp" },
-							{ "caption": "-" },
+							{
+								"caption": "Insert IP Address",
+								"children":
+								[
+									{ "caption": "Insert Internal IP", "command": "string_utilities_int_ip" },
+									{ "caption": "Insert External IP", "command": "string_utilities_ext_ip" }
+								]
+							},
 							{
 								"caption": "Generate Password",
 								"children":
@@ -66,14 +62,22 @@
 								]
 							},
 							{ "caption": "-" },
+							{ "caption": "Prettify JSON String", "command": "string_utilities_decode_json" },
+							{ "caption": "PHP Object -> Array", "command": "php_object_to_array" },
+							{ "caption": "Datetime <-> Unixtime", "command": "convert_time_format" },
+							{ "caption": "-" },
+							{ "caption": "Encode URL Notation", "command": "url_encode" },
+							{ "caption": "Decode URL Notation", "command": "url_decode" },
+							{ "caption": "Encode Unicode Notation", "command": "convert_to_unicode_notation" },
+							{ "caption": "Decode Unicode Notation", "command": "convert_from_unicode_notation" },
+							{ "caption": "Encode Base64", "command": "convert_to_base64" },
+							{ "caption": "Decode Base64", "command": "convert_from_base64" },
+							{ "caption": "Encode Hexadecimal", "command": "convert_to_hex" },
+							{ "caption": "Decode Hexadecimal", "command": "convert_from_hex" },
 							{ "caption": "Decode HeidiSQL password", "command": "decode_heidi_sql" },
-							{ "caption": "-" },
-							{ "caption": "Insert Internal IP", "command": "string_utilities_int_ip" },
-							{ "caption": "Insert External IP", "command": "string_utilities_ext_ip" },
-							{ "caption": "-" },
-							{ "caption": "Pretify JSON String", "command": "string_utilities_decode_json" },
-							{ "caption": "-" },
-							{ "caption": "Convert PHP Object to Array", "command": "php_object_to_array" }
+							{ "caption": "Calculate MD5", "command": "convert_md5" },
+							{ "caption": "Calculate SHA1", "command": "convert_sha1" }
+							// { "caption": "Expand Selection To Whole String", "command": "string_utilities_expand_string" }
 						]
 					}
 				]
