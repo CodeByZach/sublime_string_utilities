@@ -102,18 +102,29 @@
 						[
 							{
 								"caption": "Settings",
-								"command": "edit_settings", "args": {
+								"command": "edit_settings",
+								"args":
+								{
 									"base_file": "${packages}/StringUtilities/string_utilities.sublime-settings",
 									"default": "{\n$0\n}\n"
 								}
 							},
 							{ "caption": "-" },
 							{
-								"caption": "README",
-								"command": "open_file", "args":
+								"caption": "Context Menu",
+								"command": "string_utilities_edit_settings",
+								"args":
 								{
-									"file": "${packages}/StringUtilities/README.md"
+									"base_file": "${packages}/StringUtilities/Context.sublime-menu",
+									"user_file": "${packages}/User/StringUtilities/Context.sublime-menu",
+									"default": "[\n$0\n]\n"
 								}
+							},
+							{ "caption": "-" },
+							{
+								"caption": "README",
+								"command": "open_file",
+								"args": { "file": "${packages}/StringUtilities/README.md" }
 							}
 						]
 					}
