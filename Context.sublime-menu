@@ -1,11 +1,11 @@
 [
 	{
 		"id": "context-convert",
-		"caption": "StringUtilities",
+		"caption": "String Utilities",
 		"children":
 		[
-			{ "caption": "Quotes Single -> Double", "command": "convert_single_quotes_to_double" },
-			{ "caption": "Double -> Quotes Single", "command": "convert_double_quotes_to_single" },
+			{ "caption": "Single Quotes -> Double", "command": "convert_single_quotes_to_double" },
+			{ "caption": "Double Quotes -> Single", "command": "convert_double_quotes_to_single" },
 			{ "caption": "-" },
 			{ "caption": "Tabs -> Spaces", "command": "convert_tabs_to_spaces" },
 			{ "caption": "Spaces -> Tabs", "command": "convert_spaces_to_tabs" },
@@ -55,17 +55,24 @@
 			{ "caption": "PHP Object -> Array", "command": "php_object_to_array" },
 			{ "caption": "Datetime <-> Unixtime", "command": "convert_time_format" },
 			{ "caption": "-" },
-			{ "caption": "Encode URL Notation", "command": "url_encode" },
-			{ "caption": "Decode URL Notation", "command": "url_decode" },
-			{ "caption": "Encode Unicode Notation", "command": "convert_to_unicode_notation" },
-			{ "caption": "Decode Unicode Notation", "command": "convert_from_unicode_notation" },
-			{ "caption": "Encode Base64", "command": "convert_to_base64" },
-			{ "caption": "Decode Base64", "command": "convert_from_base64" },
-			{ "caption": "Encode Hexadecimal", "command": "convert_to_hex" },
-			{ "caption": "Decode Hexadecimal", "command": "convert_from_hex" },
-			{ "caption": "Decode HeidiSQL password", "command": "decode_heidi_sql" },
-			{ "caption": "Calculate MD5", "command": "convert_md5" },
-			{ "caption": "Calculate SHA1", "command": "convert_sha1" }
+			{
+				"caption": "Encode & Decode",
+				"children":
+				[
+					{ "caption": "Encode URL Notation", "command": "url_encode" },
+					{ "caption": "Decode URL Notation", "command": "url_decode" },
+					{ "caption": "Encode Unicode Notation", "command": "convert_to_unicode_notation" },
+					{ "caption": "Decode Unicode Notation", "command": "convert_from_unicode_notation" },
+					{ "caption": "Encode Base64", "command": "convert_to_base64" },
+					{ "caption": "Decode Base64", "command": "convert_from_base64" },
+					{ "caption": "Encode Hexadecimal", "command": "convert_to_hex" },
+					{ "caption": "Decode Hexadecimal", "command": "convert_from_hex" },
+					{ "caption": "Decode HeidiSQL password", "command": "decode_heidi_sql" },
+					{ "caption": "Calculate MD5", "command": "convert_md5" },
+					{ "caption": "Calculate SHA1", "command": "convert_sha1" }
+				]
+			}
+			// { "caption": "-" },
 			// { "caption": "Expand Selection To Whole String", "command": "string_utilities_expand_string" }
 		]
 	}
