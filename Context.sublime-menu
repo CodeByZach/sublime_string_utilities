@@ -1,7 +1,7 @@
 [
 	{ "caption": "-", "id": "context-convert" },
 	{
-		"caption": "String Utilities",
+		"caption": "StringUtilities",
 		"children":
 		[
 			{ "caption": "Single Quotes -> Double", "command": "convert_single_quotes_to_double" },
