@@ -27,15 +27,20 @@ class ZEditSettings(sublime_plugin.WindowCommand):
 				if not os.path.exists(expanded_target_directory):
 					os.makedirs(expanded_target_directory)
 
-			if os.path.isfile(sublime.expand_variables(kwargs.get('base_file'), self.window.extract_variables())):
+			try:
+				expanded_source_path = sublime.expand_variables(kwargs.get('base_file'), self.window.extract_variables())
+				# package_name = os.path.basename(os.path.dirname(expanded_source_path.replace(sublime.packages_path(), '')))
+				resource_path = 'Packages'+expanded_source_path.replace(sublime.packages_path(), '')
+				sublime.load_resource(resource_path)
+
 				self.window.run_command('edit_settings', kwargs)
-			else:
+			except IOError:
 				if 'user_file' in kwargs:
 					kwargs['file'] = kwargs.get('user_file')
 					del kwargs['user_file']
 				else:
-					# source_path = kwargs.get('base_file')
-					# kwargs['file'] = source_path.replace(sublime.packages_path(), os.path.join(sublime.packages_path(), 'User'))
+					# expanded_source_path = sublime.expand_variables(kwargs.get('base_file'), self.window.extract_variables())
+					# kwargs['file'] = expanded_source_path.replace(sublime.packages_path(), os.path.join(sublime.packages_path(), 'User'))
 					kwargs['file'] = os.path.join(sublime.packages_path(), 'User', os.path.basename(kwargs.get('base_file')))
 				del kwargs['base_file']
 				kwargs['contents'] = kwargs.get('default')
