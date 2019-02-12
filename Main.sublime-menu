@@ -135,9 +135,9 @@
 										"command": "z_edit_settings",
 										"args":
 										{
-											"file": "${packages}/StringUtilities/Context.sublime-menu",
 											"is_parent_setting": "1",
-											"contents": "[\n\t$0\n]\n"
+											"base_file": "${packages}/StringUtilities/Context.sublime-menu",
+											"default": "[\n\t$0\n]\n"
 										}
 									},
 									{
@@ -145,9 +145,9 @@
 										"command": "z_edit_settings",
 										"args":
 										{
-											"file": "${packages}/StringUtilities/Side Bar.sublime-menu",
 											"is_parent_setting": "1",
-											"contents": "[\n\t$0\n]\n"
+											"base_file": "${packages}/StringUtilities/Side Bar.sublime-menu",
+											"default": "[\n\t$0\n]\n"
 										}
 									},
 									{
@@ -155,9 +155,9 @@
 										"command": "z_edit_settings",
 										"args":
 										{
-											"file": "${packages}/StringUtilities/Tab Context.sublime-menu",
 											"is_parent_setting": "1",
-											"contents": "[\n\t$0\n]\n"
+											"base_file": "${packages}/StringUtilities/Tab Context.sublime-menu",
+											"default": "[\n\t$0\n]\n"
 										}
 									},
 									{
@@ -165,9 +165,9 @@
 										"command": "z_edit_settings",
 										"args":
 										{
-											"file": "${packages}/StringUtilities/Main.sublime-menu",
 											"is_parent_setting": "1",
-											"contents": "[\n\t$0\n]\n"
+											"base_file": "${packages}/StringUtilities/Main.sublime-menu",
+											"default": "[\n\t$0\n]\n"
 										}
 									}
 								]
@@ -177,8 +177,8 @@
 								"command": "z_edit_settings",
 								"args":
 								{
-									"file": "${packages}/StringUtilities/Default.sublime-commands",
 									"is_parent_setting": "1",
+									"base_file": "${packages}/StringUtilities/Default.sublime-commands",
 									"default": "[\n\t$0\n]\n"
 								}
 							},
