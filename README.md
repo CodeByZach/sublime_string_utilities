@@ -39,15 +39,15 @@ StringUtilities is a Sublime Text 3 plugin, which adds to the editor useful stri
 Installation
 ------------------
 
- * Install [Package Manager][0].
- * Use `Cmd+Shift+P` or `Ctrl+Shift+P` then `Package Control: Install Package`.
+ * Install [Package Manager](https://packagecontrol.io).
+ * Use <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> then `Package Control: Install Package`.
  * Look for `StringUtilities` and install it.
 
 If you prefer to install manually, install git, then:
 
 Clone the repository in a subfolder "StringUtilities" in your Sublime Text "Packages" directory:
 
-    git clone https://github.com/akalongman/sublimetext-stringutilities "<Sublime Text 3 Packages folder>/StringUtilities"
+    git clone https://github.com/EatBreatheCode/sublime_string_utilities "<Sublime Text 3 Packages folder>/StringUtilities"
 
 
 The "Packages" directory is located at:
@@ -60,7 +60,7 @@ Or enter
 ```python
 sublime.packages_path()
 ```
-into the console (`` Ctrl-` ``).
+into the console (<kbd>Ctrl</kbd>+<kbd>`</kbd>).
 
 Usage
 ------------------
@@ -76,5 +76,3 @@ Todo
 ## Libraries ##
 
 - **dateutil** by Gustavo Niemeyer is used for adding extensions to the standard python 2.3+ datetime module.. **PSF License**
-
-[0]: http://wbond.net/sublime_packages/package_control
