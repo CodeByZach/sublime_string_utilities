@@ -1,5 +1,7 @@
-SublimeText - StringUtilities
+StringUtilities
 ===============
+[![Latest Release](https://img.shields.io/github/tag/EatBreatheCode/sublime_string_utilities.svg?label=version)](https://github.com/EatBreatheCode/sublime_string_utilities/releases)
+
 StringUtilities is a Sublime Text 3 plugin, which adds to the editor useful string functions like:
 
 * Convert Tabs to Spaces
