@@ -1,6 +1,6 @@
 StringUtilities
 ===============
-[![Latest Release](https://img.shields.io/github/tag/EatBreatheCode/sublime_string_utilities.svg?label=version)](https://github.com/EatBreatheCode/sublime_string_utilities/releases)
+[![Latest Release](https://img.shields.io/github/tag/CodeByZach/sublime_string_utilities.svg?label=version)](https://github.com/CodeByZach/sublime_string_utilities/releases)
 
 StringUtilities is a Sublime Text 3 plugin, which adds to the editor useful string functions like:
 
@@ -49,7 +49,7 @@ If you prefer to install manually, install git, then:
 
 Clone the repository in a subfolder "StringUtilities" in your Sublime Text "Packages" directory:
 
-    git clone https://github.com/EatBreatheCode/sublime_string_utilities "<Sublime Text 3 Packages folder>/StringUtilities"
+    git clone https://github.com/CodeByZach/sublime_string_utilities "<Sublime Text 3 Packages folder>/StringUtilities"
 
 
 The "Packages" directory is located at:
