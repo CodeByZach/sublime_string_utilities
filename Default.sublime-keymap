@@ -1,0 +1,4 @@
+[
+    { "keys": ["ctrl+'"], "command": "convert_double_quotes_to_single" },
+    { "keys": ["ctrl+shift+'"], "command": "convert_single_quotes_to_double" }
+]

@@ -1,79 +1,79 @@
 [
-	{ "caption": "-", "id": "context-convert" },
-	{
-		"caption": "StringUtilities",
-		"children":
-		[
-			{ "caption": "Single Quotes -> Double", "command": "convert_single_quotes_to_double" },
-			{ "caption": "Double Quotes -> Single", "command": "convert_double_quotes_to_single" },
-			{ "caption": "-" },
-			{ "caption": "Tabs -> Spaces", "command": "convert_tabs_to_spaces" },
-			{ "caption": "Spaces -> Tabs", "command": "convert_spaces_to_tabs" },
-			{ "caption": "-" },
-			{ "caption": "Spaces -> &nbsp;", "command": "convert_spaces_to_non_breaking" },
-			{ "caption": "Chars -> HTML Entities", "command": "convert_chars_to_html" },
-			{ "caption": "HTML Entities -> Chars", "command": "convert_html_to_chars" },
-			{ "caption": "-" },
-			{ "caption": "camelCase <-> Underscores", "command": "convert_camel_underscores" },
-			{ "caption": "camelCase <-> Dash", "command": "convert_camel_dash" },
-			{ "caption": "PascalCase <-> Underscores", "command": "convert_pascal_underscores" },
-			{ "caption": "-" },
-			{ "caption": "Hex -> RGB", "command": "convert_hex_to_rgb" },
-			{ "caption": "RGB -> Hex", "command": "convert_rgb_to_hex" },
-			{ "caption": "-" },
-			{ "caption": "Insert Current Datetime", "command": "insert_timestamp" },
-			{
-				"caption": "Insert IP Address",
-				"children":
-				[
-					{ "caption": "Insert Internal IP", "command": "string_utilities_int_ip" },
-					{ "caption": "Insert External IP", "command": "string_utilities_ext_ip" }
-				]
-			},
-			{
-				"caption": "Generate Password",
-				"children":
-				[
-					{ "caption": "Generate Password (6 char)", "command": "generate_password", "args": { "length": "6" } },
-					{ "caption": "Generate Password (8 char)", "command": "generate_password", "args": { "length": "8" } },
-					{ "caption": "Generate Password (12 char)", "command": "generate_password", "args": { "length": "12" } },
-					{ "caption": "Generate Password (16 char)", "command": "generate_password", "args": { "length": "16" } },
-					{ "caption": "Generate Password (32 char)", "command": "generate_password", "args": { "length": "32" } },
-					{ "caption": "Generate Password (40 char)", "command": "generate_password", "args": { "length": "40" } },
-					{ "caption": "Generate Password (64 char)", "command": "generate_password", "args": { "length": "64" } },
-					{ "caption": "Generate Password with spec symbols (6 char)", "command": "generate_password_spec_symbols", "args": { "length": "6" } },
-					{ "caption": "Generate Password with spec symbols (8 char)", "command": "generate_password_spec_symbols", "args": { "length": "8" } },
-					{ "caption": "Generate Password with spec symbols (12 char)", "command": "generate_password_spec_symbols", "args": { "length": "12" } },
-					{ "caption": "Generate Password with spec symbols (16 char)", "command": "generate_password_spec_symbols", "args": { "length": "16" } },
-					{ "caption": "Generate Password with spec symbols (32 char)", "command": "generate_password_spec_symbols", "args": { "length": "32" } },
-					{ "caption": "Generate Password with spec symbols (40 char)", "command": "generate_password_spec_symbols", "args": { "length": "40" } },
-					{ "caption": "Generate Password with spec symbols (64 char)", "command": "generate_password_spec_symbols", "args": { "length": "64" } }
-				]
-			},
-			{ "caption": "-" },
-			{ "caption": "Prettify JSON String", "command": "string_utilities_decode_json" },
-			{ "caption": "PHP Object -> Array", "command": "php_object_to_array" },
-			{ "caption": "Datetime <-> Unixtime", "command": "convert_time_format" },
-			{ "caption": "-" },
-			{
-				"caption": "Encode & Decode",
-				"children":
-				[
-					{ "caption": "Encode URL Notation", "command": "url_encode" },
-					{ "caption": "Decode URL Notation", "command": "url_decode" },
-					{ "caption": "Encode Unicode Notation", "command": "convert_to_unicode_notation" },
-					{ "caption": "Decode Unicode Notation", "command": "convert_from_unicode_notation" },
-					{ "caption": "Encode Base64", "command": "convert_to_base64" },
-					{ "caption": "Decode Base64", "command": "convert_from_base64" },
-					{ "caption": "Encode Hexadecimal", "command": "convert_to_hex" },
-					{ "caption": "Decode Hexadecimal", "command": "convert_from_hex" },
-					{ "caption": "Decode HeidiSQL password", "command": "decode_heidi_sql" },
-					{ "caption": "Calculate MD5", "command": "convert_md5" },
-					{ "caption": "Calculate SHA1", "command": "convert_sha1" }
-				]
-			}
-			// { "caption": "-" },
-			// { "caption": "Expand Selection To Whole String", "command": "string_utilities_expand_string" }
-		]
-	}
+    { "caption": "-", "id": "context-convert" },
+    {
+        "caption": "StringUtilities",
+        "children":
+        [
+            { "caption": "Single Quotes -> Double", "command": "convert_single_quotes_to_double" },
+            { "caption": "Double Quotes -> Single", "command": "convert_double_quotes_to_single" },
+            { "caption": "-" },
+            { "caption": "Tabs -> Spaces", "command": "convert_tabs_to_spaces" },
+            { "caption": "Spaces -> Tabs", "command": "convert_spaces_to_tabs" },
+            { "caption": "-" },
+            { "caption": "Spaces -> &nbsp;", "command": "convert_spaces_to_non_breaking" },
+            { "caption": "Chars -> HTML Entities", "command": "convert_chars_to_html" },
+            { "caption": "HTML Entities -> Chars", "command": "convert_html_to_chars" },
+            { "caption": "-" },
+            { "caption": "camelCase <-> Underscores", "command": "convert_camel_underscores" },
+            { "caption": "camelCase <-> Dash", "command": "convert_camel_dash" },
+            { "caption": "PascalCase <-> Underscores", "command": "convert_pascal_underscores" },
+            { "caption": "-" },
+            { "caption": "Hex -> RGB", "command": "convert_hex_to_rgb" },
+            { "caption": "RGB -> Hex", "command": "convert_rgb_to_hex" },
+            { "caption": "-" },
+            { "caption": "Insert Current Datetime", "command": "insert_timestamp" },
+            {
+                "caption": "Insert IP Address",
+                "children":
+                [
+                    { "caption": "Insert Internal IP", "command": "string_utilities_int_ip" },
+                    { "caption": "Insert External IP", "command": "string_utilities_ext_ip" }
+                ]
+            },
+            {
+                "caption": "Generate Password",
+                "children":
+                [
+                    { "caption": "Generate Password (6 char)", "command": "generate_password", "args": { "length": "6" } },
+                    { "caption": "Generate Password (8 char)", "command": "generate_password", "args": { "length": "8" } },
+                    { "caption": "Generate Password (12 char)", "command": "generate_password", "args": { "length": "12" } },
+                    { "caption": "Generate Password (16 char)", "command": "generate_password", "args": { "length": "16" } },
+                    { "caption": "Generate Password (32 char)", "command": "generate_password", "args": { "length": "32" } },
+                    { "caption": "Generate Password (40 char)", "command": "generate_password", "args": { "length": "40" } },
+                    { "caption": "Generate Password (64 char)", "command": "generate_password", "args": { "length": "64" } },
+                    { "caption": "Generate Password with spec symbols (6 char)", "command": "generate_password_spec_symbols", "args": { "length": "6" } },
+                    { "caption": "Generate Password with spec symbols (8 char)", "command": "generate_password_spec_symbols", "args": { "length": "8" } },
+                    { "caption": "Generate Password with spec symbols (12 char)", "command": "generate_password_spec_symbols", "args": { "length": "12" } },
+                    { "caption": "Generate Password with spec symbols (16 char)", "command": "generate_password_spec_symbols", "args": { "length": "16" } },
+                    { "caption": "Generate Password with spec symbols (32 char)", "command": "generate_password_spec_symbols", "args": { "length": "32" } },
+                    { "caption": "Generate Password with spec symbols (40 char)", "command": "generate_password_spec_symbols", "args": { "length": "40" } },
+                    { "caption": "Generate Password with spec symbols (64 char)", "command": "generate_password_spec_symbols", "args": { "length": "64" } }
+                ]
+            },
+            { "caption": "-" },
+            { "caption": "Prettify JSON String", "command": "string_utilities_decode_json" },
+            { "caption": "PHP Object -> Array", "command": "php_object_to_array" },
+            { "caption": "Datetime <-> Unixtime", "command": "convert_time_format" },
+            { "caption": "-" },
+            {
+                "caption": "Encode & Decode",
+                "children":
+                [
+                    { "caption": "Encode URL Notation", "command": "url_encode" },
+                    { "caption": "Decode URL Notation", "command": "url_decode" },
+                    { "caption": "Encode Unicode Notation", "command": "convert_to_unicode_notation" },
+                    { "caption": "Decode Unicode Notation", "command": "convert_from_unicode_notation" },
+                    { "caption": "Encode Base64", "command": "convert_to_base64" },
+                    { "caption": "Decode Base64", "command": "convert_from_base64" },
+                    { "caption": "Encode Hexadecimal", "command": "convert_to_hex" },
+                    { "caption": "Decode Hexadecimal", "command": "convert_from_hex" },
+                    { "caption": "Decode HeidiSQL password", "command": "decode_heidi_sql" },
+                    { "caption": "Calculate MD5", "command": "convert_md5" },
+                    { "caption": "Calculate SHA1", "command": "convert_sha1" }
+                ]
+            }
+            // { "caption": "-" },
+            // { "caption": "Expand Selection To Whole String", "command": "string_utilities_expand_string" }
+        ]
+    }
 ]
