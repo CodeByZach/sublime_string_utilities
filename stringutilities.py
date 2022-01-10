@@ -128,6 +128,23 @@ class ConvertHtmlToCharsCommand(sublime_plugin.TextCommand):
                 self.view.replace(edit, region, text)
 
 
+class ConvertUnderscoresDashesCommand(sublime_plugin.TextCommand):
+    #Convert under_scores to dashes and vice versa
+    def run(self, edit):
+        for region in self.view.sel():
+            if not region.empty():
+                text = self.view.substr(region)
+                text = self.toUnderscores(text) if '-' in text and text[0].islower() else (text[0].islower() and self.toDashes(text))
+                if text:
+                    self.view.replace(edit, region, text)
+
+    def toDashes(self, name):
+        return name.replace('_', '-').lower()
+
+    def toUnderscores(self, name):
+        return name.replace('-', '_').lower()
+
+
 class ConvertCamelUnderscoresCommand(sublime_plugin.TextCommand):
     #Convert camelCase to under_scores and vice versa
     def run(self, edit):
@@ -145,17 +162,18 @@ class ConvertCamelUnderscoresCommand(sublime_plugin.TextCommand):
     def toCamelCase(self, name):
         return ''.join(ch.capitalize() if i > 0 else ch for i, ch in enumerate(name.split('_')))
 
-class ConvertCamelDashCommand(sublime_plugin.TextCommand):
-    #Convert camelCase to dash and vice versa
+
+class ConvertCamelDashesCommand(sublime_plugin.TextCommand):
+    #Convert camelCase to dashes and vice versa
     def run(self, edit):
         for region in self.view.sel():
             if not region.empty():
                 text = self.view.substr(region)
-                text = self.toCamelCase(text) if '-' in text and text[0].islower() else (text[0].islower() and self.toDash(text))
+                text = self.toCamelCase(text) if '-' in text and text[0].islower() else (text[0].islower() and self.toDashes(text))
                 if text:
                     self.view.replace(edit, region, text)
 
-    def toDash(self, name):
+    def toDashes(self, name):
         s1 = re.sub('(.)([A-Z][a-z]+)', r'\1-\2', name)
         return re.sub('([a-z0-9])([A-Z])', r'\1-\2', s1).lower()
 
@@ -176,6 +194,24 @@ class ConvertPascalUnderscoresCommand(sublime_plugin.TextCommand):
     def toUnderscores(self, name):
         s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
         return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+    def toPascalCase(self, name):
+        return ''.join(map(lambda x: x.capitalize(), name.split('_')))
+
+
+class ConvertPascalDashesCommand(sublime_plugin.TextCommand):
+    #Convert PascalCase to dashes and vice versa
+    def run(self, edit):
+        for region in self.view.sel():
+            if not region.empty():
+                text = self.view.substr(region)
+                text = self.toPascalCase(text) if '_' in text and text[0].islower() else (text[0].isupper() and self.toDashes(text))
+                if text:
+                    self.view.replace(edit, region, text)
+
+    def toDashes(self, name):
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1-\2', name)
+        return re.sub('([a-z0-9])([A-Z])', r'\1-\2', s1).lower()
 
     def toPascalCase(self, name):
         return ''.join(map(lambda x: x.capitalize(), name.split('_')))
