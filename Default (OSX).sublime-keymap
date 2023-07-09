@@ -1,4 +1,4 @@
 [
-    { "keys": ["super+'"], "command": "convert_double_quotes_to_single" },
+    { "keys": ["super+'"],       "command": "convert_double_quotes_to_single" },
     { "keys": ["super+shift+'"], "command": "convert_single_quotes_to_double" }
 ]
