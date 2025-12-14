@@ -15,7 +15,7 @@ from cgi import escape
 from hashlib import md5, sha1, sha224, sha256, sha384, sha512
 from datetime import datetime
 from random import sample, choice, randrange
-import os, socket, urllib
+import os, socket, urllib.request
 import binascii
 import json
 import pprint
@@ -596,7 +596,7 @@ class StringUtilitiesDecodeJsonCommand(sublime_plugin.TextCommand):
 
 class StringUtilitiesTestCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        ext_ip = urllib2.urlopen('http://api.long.ge/sublimetext/ip.php').read()
+        ext_ip = urllib.request.urlopen('http://api.long.ge/sublimetext/ip.php').read()
         for region in self.view.sel():
             self.view.insert(edit, region.begin(), ext_ip.encode(self.enc()))
 
