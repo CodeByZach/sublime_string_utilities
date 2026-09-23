@@ -345,7 +345,7 @@ class ConvertRgbToHexCommand(sublime_plugin.TextCommand):
             if not region.empty():
                 text = self.view.substr(region)
                 str_len = len(text)
-                reg_rgb = '^rgb[a]?\((\s*\d+\s*),(\s*\d+\s*),(\s*\d+\s*),?(\s*(0?.?\d)+\s*)?\)$'
+                reg_rgb = r'^rgb[a]?\((\s*\d+\s*),(\s*\d+\s*),(\s*\d+\s*),?(\s*(0?.?\d)+\s*)?\)$'
                 rgb_match = re.match(reg_rgb, text)
                 if rgb_match is not None:
                     self.view.replace(edit, region, self.rgbToHex(rgb_match))
