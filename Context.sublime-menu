@@ -1,7 +1,7 @@
 [
     {
         "caption": "-",
-        "id": "context-convert-end"
+        "id": "context-convert"
     },
     {
         "caption": "StringUtilities",
@@ -316,11 +316,6 @@
                     }
                 ]
             }
-        ],
-        "id": "context-convert"
-    },
-    {
-        "caption": "-",
-        "id": "context-convert-end"
+        ]
     }
 ]
