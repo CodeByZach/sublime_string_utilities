@@ -10,12 +10,13 @@ import re
 import sys
 import time
 import base64
+import codecs
 import html.entities as htmlentitydefs
 from html import escape
 from hashlib import md5, sha1, sha224, sha256, sha384, sha512
 from datetime import datetime
-from random import sample, choice, randrange
-import os, socket, urllib.request
+from random import SystemRandom
+import os, socket, urllib.parse, urllib.request
 import binascii
 import json
 import pprint
@@ -23,6 +24,25 @@ import pprint
 if sys.hexversion >= 0x3000000:
     def unichr(c):
         return chr(c)
+
+def view_encoding(view):
+    """Python codec name for the view's encoding. Sublime reports display
+    names such as "Western (Windows 1252)" or "UTF-8 with BOM"."""
+    name = view.encoding()
+    if name == 'Undefined':
+        name = view.settings().get('default_encoding', 'UTF-8')
+    name = name.lower().replace(' with bom', '')
+    match = re.search(r'\((.*)\)', name)
+    if match:
+        name = match.group(1)
+    name = re.sub(r'^(?:windows|cp) ', 'cp', name).replace('iso ', 'iso')
+    if name == 'mac':
+        # "Central European (Mac)" is the only plain "(Mac)" encoding
+        name = 'mac_latin2'
+    try:
+        return codecs.lookup(name).name
+    except LookupError:
+        return 'utf-8'
 
 class StringUtilitiesExpandStringCommand(sublime_plugin.TextCommand):
     """If the region is contained in a string scope, expands the region to
@@ -61,10 +81,7 @@ class ConvertSelection(sublime_plugin.TextCommand):
                 self.view.replace(edit, region, self.convert(text))
 
     def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
+        return view_encoding(self.view)
 
     def convert(self, text):
         raise NotImplementedError("Subclass must implement convert")
@@ -120,13 +137,94 @@ class ConvertCharsToHtmlCommand(sublime_plugin.TextCommand):
 
 class ConvertHtmlToCharsCommand(sublime_plugin.TextCommand):
     #Convert XML/HTML Entities into Chars
+    # Only references ending in ';' are decoded, so a query string such as
+    # "?a=1&copy=2" stays intact (html.unescape would decode "&copy").
+    pattern = re.compile(r'&(#[0-9]+|#[xX][0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]*);')
+
     def run(self, edit):
         for region in self.view.sel():
             if not region.empty():
-                text = re.sub('&(%s);' % '|'.join(htmlentitydefs.name2codepoint),
-                    lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), self.view.substr(region))
+                text = self.pattern.sub(self.decode, self.view.substr(region))
                 self.view.replace(edit, region, text)
 
+    def decode(self, match):
+        ref = match.group(1)
+        if ref[0] != '#':
+            return htmlentitydefs.html5.get(ref + ';', match.group(0))
+        codepoint = int(ref[2:], 16) if ref[1] in 'xX' else int(ref[1:])
+        if 0 < codepoint <= 0x10FFFF and not 0xD800 <= codepoint <= 0xDFFF:
+            return unichr(codepoint)
+        return match.group(0)
+
+
+def split_case(name, separator):
+    """camelCase or PascalCase to lowercase words joined by separator."""
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1' + separator + r'\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1' + separator + r'\2', s1).lower()
+
+def join_case(name, separator, pascal):
+    """Words joined by separator to PascalCase, or to camelCase with the
+    first word lowercased (entirely when it is all uppercase)."""
+    words = name.split(separator)
+    if pascal:
+        return ''.join(word.capitalize() for word in words)
+    first = words[0]
+    if first.isupper():
+        first = first.lower()
+    else:
+        first = first[:1].lower() + first[1:]
+    return first + ''.join(word.capitalize() for word in words[1:])
+
+def toggle_case(text, separator, pascal):
+    """Converts a non-empty selection between separated and joined form.
+    Returns None when the selection is to be left alone."""
+    joined_start = str.isupper if pascal else str.islower
+    identifier = (all(ch.isalnum() or ch == separator for ch in text) and
+                  any(ch.isalpha() for ch in text))
+    if not identifier:
+        # Not an identifier with a letter: the first character decides, as before
+        if separator in text and text[0].islower():
+            return join_case(text, separator, pascal)
+        if joined_start(text[0]):
+            return split_case(text, separator)
+        return None
+    lead = trail = ''
+    core = text
+    if text.startswith(separator):
+        # Leading and trailing separator runs are kept as they are; the
+        # identifier's letter keeps the core non-empty
+        stripped = text.lstrip(separator)
+        lead = text[:len(text) - len(stripped)]
+        core = stripped.rstrip(separator)
+        trail = stripped[len(core):]
+    # A capitalized text with an inner case boundary (UserProfile_id) or
+    # with only a trailing separator run (Class_) is not joined, which would
+    # lose its words or its suffix: PascalCase splits it and camelCase
+    # leaves it alone, as before
+    as_before = core[0].isupper() and (
+        separator not in core.rstrip(separator) or any(
+            split_case(word, separator) != word.lower()
+            for word in core.split(separator)))
+    if separator in core and not as_before:
+        core = join_case(core, separator, pascal)
+    elif joined_start(core[0]):
+        core = split_case(core, separator)
+    else:
+        return None
+    return lead + core + trail
+
+class CaseToggleCommand(sublime_plugin.TextCommand):
+    #Toggle each selection between separated and joined case
+    separator = '_'
+    pascal = False
+
+    def run(self, edit):
+        for region in self.view.sel():
+            if not region.empty():
+                original = self.view.substr(region)
+                text = toggle_case(original, self.separator, self.pascal)
+                if text is not None and text != original:
+                    self.view.replace(edit, region, text)
 
 class ConvertUnderscoresDashesCommand(sublime_plugin.TextCommand):
     #Convert under_scores to dashes and vice versa
@@ -144,77 +242,26 @@ class ConvertUnderscoresDashesCommand(sublime_plugin.TextCommand):
     def toUnderscores(self, name):
         return name.replace('-', '_').lower()
 
-
-class ConvertCamelUnderscoresCommand(sublime_plugin.TextCommand):
+class ConvertCamelUnderscoresCommand(CaseToggleCommand):
     #Convert camelCase to under_scores and vice versa
-    def run(self, edit):
-        for region in self.view.sel():
-            if not region.empty():
-                text = self.view.substr(region)
-                text = self.toCamelCase(text) if '_' in text and text[0].islower() else (text[0].islower() and self.toUnderscores(text))
-                if text:
-                    self.view.replace(edit, region, text)
+    separator = '_'
+    pascal = False
 
-    def toUnderscores(self, name):
-        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-
-    def toCamelCase(self, name):
-        return ''.join(ch.capitalize() if i > 0 else ch for i, ch in enumerate(name.split('_')))
+class ConvertCamelDashCommand(CaseToggleCommand):
+    #Convert camelCase to dash and vice versa
+    separator = '-'
+    pascal = False
 
 
-class ConvertCamelDashesCommand(sublime_plugin.TextCommand):
-    #Convert camelCase to dashes and vice versa
-    def run(self, edit):
-        for region in self.view.sel():
-            if not region.empty():
-                text = self.view.substr(region)
-                text = self.toCamelCase(text) if '-' in text and text[0].islower() else (text[0].islower() and self.toDashes(text))
-                if text:
-                    self.view.replace(edit, region, text)
-
-    def toDashes(self, name):
-        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1-\2', name)
-        return re.sub('([a-z0-9])([A-Z])', r'\1-\2', s1).lower()
-
-    def toCamelCase(self, name):
-        return ''.join(ch.capitalize() if i > 0 else ch for i, ch in enumerate(name.split('-')))
-
-
-class ConvertPascalUnderscoresCommand(sublime_plugin.TextCommand):
+class ConvertPascalUnderscoresCommand(CaseToggleCommand):
     #Convert PascalCase to under_scores and vice versa
-    def run(self, edit):
-        for region in self.view.sel():
-            if not region.empty():
-                text = self.view.substr(region)
-                text = self.toPascalCase(text) if '_' in text and text[0].islower() else (text[0].isupper() and self.toUnderscores(text))
-                if text:
-                    self.view.replace(edit, region, text)
+    separator = '_'
+    pascal = True
 
-    def toUnderscores(self, name):
-        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-
-    def toPascalCase(self, name):
-        return ''.join(map(lambda x: x.capitalize(), name.split('_')))
-
-
-class ConvertPascalDashesCommand(sublime_plugin.TextCommand):
-    #Convert PascalCase to dashes and vice versa
-    def run(self, edit):
-        for region in self.view.sel():
-            if not region.empty():
-                text = self.view.substr(region)
-                text = self.toPascalCase(text) if '_' in text and text[0].islower() else (text[0].isupper() and self.toDashes(text))
-                if text:
-                    self.view.replace(edit, region, text)
-
-    def toDashes(self, name):
-        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1-\2', name)
-        return re.sub('([a-z0-9])([A-Z])', r'\1-\2', s1).lower()
-
-    def toPascalCase(self, name):
-        return ''.join(map(lambda x: x.capitalize(), name.split('_')))
+class ConvertPascalDashCommand(CaseToggleCommand):
+    #Convert PascalCase to dash and vice versa
+    separator = '-'
+    pascal = True
 
 
 class ConvertToUnicodeNotationCommand(sublime_plugin.TextCommand):
@@ -252,14 +299,11 @@ class ConvertToBase64Command(sublime_plugin.TextCommand):
             if not region.empty():
                 text = self.view.substr(region).encode(self.enc())
                 t = base64.b64encode(text)
-                txt = str(t, self.enc())
+                txt = str(t, 'ascii')
                 self.view.replace(edit, region, txt)
 
     def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
+        return view_encoding(self.view)
 
 
 class ConvertFromBase64Command(sublime_plugin.TextCommand):
@@ -268,15 +312,15 @@ class ConvertFromBase64Command(sublime_plugin.TextCommand):
         for region in self.view.sel():
             if not region.empty():
                 text = self.view.substr(region).encode(self.enc())
-                t = base64.b64decode(text)
-                txt = str(t, self.enc())
+                try:
+                    txt = str(base64.b64decode(text), self.enc())
+                except ValueError as e:
+                    sublime.status_message('Base64 decode failed: %s' % e)
+                    continue
                 self.view.replace(edit, region, txt)
 
     def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
+        return view_encoding(self.view)
 
 class ConvertToHexCommand(sublime_plugin.TextCommand):
     #Convert string to hex
@@ -289,10 +333,7 @@ class ConvertToHexCommand(sublime_plugin.TextCommand):
                 self.view.replace(edit, region, txt)
 
     def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
+        return view_encoding(self.view)
 
 
 class ConvertFromHexCommand(sublime_plugin.TextCommand):
@@ -300,16 +341,16 @@ class ConvertFromHexCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         for region in self.view.sel():
             if not region.empty():
-                text = self.view.substr(region).encode(self.enc())
-                t = binascii.unhexlify(text)
-                txt = str(t,'ascii')
+                try:
+                    t = binascii.unhexlify(self.view.substr(region).encode('ascii'))
+                    txt = str(t, self.enc())
+                except ValueError as e:
+                    sublime.status_message('Hex decode failed: %s' % e)
+                    continue
                 self.view.replace(edit, region, txt)
 
     def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
+        return view_encoding(self.view)
 
 class ConvertHexToRgbCommand(sublime_plugin.TextCommand):
     #Convert hex to rgb color
@@ -318,12 +359,6 @@ class ConvertHexToRgbCommand(sublime_plugin.TextCommand):
             if not region.empty():
                 text = self.view.substr(region)
                 self.view.replace(edit, region, self.hexToRgb(text))
-
-    def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
 
     def hexToRgb(self, value):
         value = value.lstrip('#')
@@ -349,12 +384,6 @@ class ConvertRgbToHexCommand(sublime_plugin.TextCommand):
                 rgb_match = re.match(reg_rgb, text)
                 if rgb_match is not None:
                     self.view.replace(edit, region, self.rgbToHex(rgb_match))
-
-    def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
 
     def rgbToHex(self, rgb_match):
         """Converts an rgb(a) value to a hex value.
@@ -483,14 +512,11 @@ class GeneratePasswordCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, length=16):
         length = int(length)
-        self.view.insert(edit, self.view.sel()[0].begin(), ''.join(sample(self.chars, length)))
+        rng = SystemRandom()
+        self.view.insert(edit, self.view.sel()[0].begin(), ''.join(rng.choice(self.chars) for _ in range(length)))
 
-class GeneratePasswordSpecSymbolsCommand(sublime_plugin.TextCommand):
+class GeneratePasswordSpecSymbolsCommand(GeneratePasswordCommand):
     chars = "0123456789abcdefghijkmnpqrstuvwxyzABCDEFGHKMNPQRSTUVWXYZ%*)?@#$~"
-
-    def run(self, edit, length=16):
-        length = int(length)
-        self.view.insert(edit, self.view.sel()[0].begin(), ''.join(sample(self.chars, length)))
 
 class DecodeHeidiSqlCommand(sublime_plugin.TextCommand):
     # Requires .strip('\x00') on output otherwise sublimetext adds a 'NUL' control chracter
@@ -509,17 +535,17 @@ class DecodeHeidiSqlCommand(sublime_plugin.TextCommand):
 
 class StringUtilitiesExtIpCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        url = "http://api.long.ge/sublimetext/ip.php"
-        request = urllib.request.Request(url)
-        response = urllib.request.urlopen(request)
+        url = "https://api.ipify.org"
+        try:
+            ext_ip = urllib.request.urlopen(url, timeout=10).read().decode('ascii').strip()
+        except Exception as e:
+            sublime.status_message('Could not get external IP: %s' % e)
+            return
+        if not re.match(r'^[0-9a-fA-F.:]+$', ext_ip):
+            sublime.status_message('Unexpected response from %s' % url)
+            return
         for region in self.view.sel():
-            self.view.insert(edit, region.begin(), response.read().decode(self.enc()))
-
-    def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
+            self.view.insert(edit, region.begin(), ext_ip)
 
 class StringUtilitiesIntIpCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -530,12 +556,6 @@ class StringUtilitiesIntIpCommand(sublime_plugin.TextCommand):
         for region in self.view.sel():
                 self.view.insert(edit, region.begin(), int_ip)
 
-    def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
-
 
 class StringUtilitiesDecodeJsonCommand(sublime_plugin.TextCommand):
     output = ""
@@ -545,9 +565,8 @@ class StringUtilitiesDecodeJsonCommand(sublime_plugin.TextCommand):
         for region in self.view.sel():
             self.output = ""
             if not region.empty():
-                text = self.view.substr(region).encode(self.enc())
-                text = str(text, 'utf8')
-                data = json.loads(text, encoding='utf8')
+                text = self.view.substr(region)
+                data = json.loads(text)
                 output = json.dumps(data, indent=4, sort_keys=True)
 
                 self.view.replace(edit, region, output)
@@ -564,12 +583,6 @@ class StringUtilitiesDecodeJsonCommand(sublime_plugin.TextCommand):
                 #data = data.replace('{', '\n   {\n')
 
                 #self.view.replace(edit, region, self.output)
-
-    def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
 
     def recursivePrint(self, src, dpth = 0, key = ''):
         """ Recursively prints nested elements."""
@@ -592,19 +605,6 @@ class StringUtilitiesDecodeJsonCommand(sublime_plugin.TextCommand):
                 self.i = self.i + 1
                 self.output += tabs(dpth) + str(self.i) + ' => %s' % src + "\n"
 
-
-
-class StringUtilitiesTestCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        ext_ip = urllib.request.urlopen('http://api.long.ge/sublimetext/ip.php').read()
-        for region in self.view.sel():
-            self.view.insert(edit, region.begin(), ext_ip.encode(self.enc()))
-
-    def enc(self):
-        if self.view.encoding() == 'Undefined':
-            return self.view.settings().get('default_encoding', 'UTF-8')
-        else:
-            return self.view.encoding()
 
 
 class PhpObjectToArrayCommand(sublime_plugin.TextCommand):

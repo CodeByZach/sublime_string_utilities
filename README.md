@@ -4,12 +4,17 @@ StringUtilities
 
 StringUtilities is a Sublime Text 3 plugin, which adds to the editor useful string functions like:
 
+* Expand Selection to Whole String
 * Convert Tabs to Spaces
 * Convert Spaces to Tabs
-* Convert Spaces to Non-Breaking Spaces
-* Convert Chars to Html Entities
-* Convert Html Entities to Chars
-* Convert Camel Case <-> Underscores
+* Convert Spaces to `&nbsp;` (Non-breaking space)
+* Convert Chars to HTML Entities
+* Convert HTML Entities to Chars
+* Convert Underscores <-> Dashes
+* Convert camelCase <-> Underscores
+* Convert camelCase <-> Dashes
+* Convert PascalCase <-> Underscores
+* Convert PascalCase <-> Dashes
 * Convert Single Quotes To Double
 * Convert Double Quotes To Single
 * Encode as URL Notation
@@ -20,22 +25,22 @@ StringUtilities is a Sublime Text 3 plugin, which adds to the editor useful stri
 * Convert From Base64
 * Convert To Hex
 * Convert From Hex
-* Convert HTML Color From Hex To RGB
-* Convert HTML Color From RGB To Hex
-* Calculate Selection MD5
-* Calculate Selection SHA1
+* Convert HTML Color Hex To RGB
+* Convert HTML Color RGB To Hex
+* Calculate MD5
+* Calculate SHA1
+* Calculate SHA224
+* Calculate SHA256
+* Calculate SHA384
+* Calculate SHA512
 * Convert Unixtime <-> Datetime
 * Insert Current Datetime
-* Generate Password (6 char)
-* Generate Password (8 char)
-* Generate Password (12 char)
-* Generate Password (16 char)
-* Generate Password (32 char)
-* Generate Password (40 char)
-* Generate Password (64 char)
-* Insert Internal IP Address
-* Insert External IP Address
-* Pretify JSON String
+* Insert Password (6 to 64 char, optionally with spec symbols)
+* Decode HeidiSQL password
+* Insert Internal IP
+* Insert External IP
+* Prettify JSON String
+* Convert PHP Object to Array
 
 
 Installation
@@ -64,17 +69,22 @@ sublime.packages_path()
 ```
 into the console (<kbd>Ctrl</kbd>+<kbd>`</kbd>).
 
+Compatibility
+------------------
+
+StringUtilities runs on both Sublime Text plugin hosts:
+
+* Python 3.3: Sublime Text 3, and Sublime Text 4 before build 4213
+* Python 3.14: Sublime Text 4 build 4213 and later
+
+Changes must keep working on both. Avoid language features and standard library additions newer than Python 3.3 (for example f-strings, `secrets` or `html.unescape`), or provide a fallback.
+
 Usage
 ------------------
 
-* Right click on editor window (first select text if function is convert type) and select String Utilities menu item.
+* Right click on editor window (first select text if function is convert type) and select StringUtilities menu item.
 
 Todo
 ------------------
 
  * Add some missed functions
-
-
-## Libraries ##
-
-- **dateutil** by Gustavo Niemeyer is used for adding extensions to the standard python 2.3+ datetime module.. **PSF License**
